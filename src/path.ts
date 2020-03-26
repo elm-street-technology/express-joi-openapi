@@ -5,7 +5,7 @@ export interface IPathConfig {
   method: 'get' | 'post' | 'put' | 'delete';
   path: string;
   description: string;
-  handler: Array<express.Handler> | express.Handler;
+  handler: Array<express.RequestHandler> | express.RequestHandler;
   responses: {};
   // responses: {| [statusCode: string | "default"]: $OpenapiResponseObject |},
   validate?: {

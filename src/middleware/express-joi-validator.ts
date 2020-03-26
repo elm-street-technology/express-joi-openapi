@@ -1,10 +1,9 @@
-// @flow
 import _ from 'lodash';
 import Joi from '@hapi/joi';
 import * as express from 'express';
 
 export default function expressJoiMiddleware(schema: { query?: Object; params?: Object; body?: Object }) {
-  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  return (req: express.Request, res: express.Response, next: express.NextFunction): void => {
     try {
       if (schema.query) {
         req.query = Joi.attempt(req.query, schema.query);
@@ -18,7 +17,7 @@ export default function expressJoiMiddleware(schema: { query?: Object; params?: 
       next();
     } catch (error) {
       res.status(400);
-      return res.send({
+      res.send({
         error: 'ValidationError',
         messages: _.map(error.details, errMessage => ({
           message: errMessage.message,
