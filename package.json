@@ -1,0 +1,33 @@
+{
+  "name": "@elm-street-technology/express-joi-openapi",
+  "version": "0.0.0",
+  "description": "Automate Express Routes To Generate Swagger With Validation Support",
+  "repository": {
+    "url": "https://github.com/elm-street-technology/express-joi-openapi"
+  },
+  "main": "dist/index.js",
+  "author": "Tim DeDecker <tdedecker@tryelevate.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "npm run build -- -w",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format-check": "prettier -l 'src/**/*.ts'",
+    "lint": "npx tslint -p tsconfig.json",
+    "postversion": "git push --follow-tags"
+  },
+  "devDependencies": {
+    "@hapi/joi": "^17.1.1",
+    "@types/hapi__joi": "^16.0.12",
+    "@types/lodash": "^4.14.149",
+    "@types/node": "^12.0.10",
+    "prettier": "^1.18.2",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "@types/express": "^4.17.3",
+    "lodash": "^4.17.15"
+  }
+}
