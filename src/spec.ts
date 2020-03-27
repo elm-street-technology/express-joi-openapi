@@ -1,4 +1,5 @@
 import * as openapi from './types/openapi';
+import _ from 'lodash';
 
 import Path from './path';
 
@@ -24,7 +25,20 @@ export default class Spec {
   }
 
   generatePaths() {
-    return {};
+    const pathGroups: { [name: string]: Array<Path> } = _.groupBy(this.paths, p => p.getOpenapiPath());
+    return _.transform(
+      pathGroups,
+      (pathsObjects: { [path: string]: any }, group: Array<Path>, key: string) => {
+        pathsObjects[key] = _.transform(
+          group,
+          (pathObject: { [method: string]: any }, path) => {
+            pathObject[path.getMethod()] = path.getPathObject();
+          },
+          {},
+        );
+      },
+      {},
+    );
   }
 
   getDefinition() {
