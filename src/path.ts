@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as joi from '@hapi/joi';
 import * as pathToRegexp from 'path-to-regexp';
 import _ from 'lodash';
-import ParameterParser from './utils/parse-parameters';
+import ParameterParser, { IPropertyObject } from './utils/parse-parameters';
 
 export interface IPathConfig {
   method: 'get' | 'post' | 'put' | 'delete';
@@ -16,6 +16,11 @@ export interface IPathConfig {
     params?: joi.ObjectSchema;
     body?: joi.ObjectSchema;
   };
+}
+
+export interface IPathObject {
+  description?: string;
+  parameters?: Array<IPropertyObject[]>;
 }
 
 export default class Path {
@@ -43,7 +48,7 @@ export default class Path {
     return this.config.method;
   }
 
-  getPathObject() {
+  getPathObject(): IPathObject {
     const pathParams = this.pathParams ? this.pathParams.getParameters() : null;
     const queryParams = this.queryParams ? this.queryParams.getParameters() : null;
     const parameters = _.compact(_.concat([], pathParams, queryParams));
@@ -64,5 +69,10 @@ export default class Path {
     if (this.config.validate && this.config.validate.params) {
       this.pathParams = new ParameterParser(this.config.validate.params, 'path');
     }
+    // TODO body
+
+    // TODO header
+
+    // TODO cookies
   }
 }

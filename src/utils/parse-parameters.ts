@@ -3,9 +3,9 @@ import _ from 'lodash';
 import * as Schema from './schema';
 // import convert from 'joi-to-json-schema';
 
-interface ISchemaObject {}
+interface ISchemaObject { }
 
-interface IPropertyObject {
+export interface IPropertyObject {
   name: string;
   in: string;
   description?: string;
@@ -33,7 +33,7 @@ export default class Parameters {
   }
 
   convert(schema: joi.ObjectSchema) {
-    this.parameters = _.transform<JoiKeysObject, IPropertyObject>(
+    this.parameters = _.transform<JoiKeysObject, IPropertyObject[]>(
       schema.$_terms.keys,
       (out, property) => {
         const prop: IPropertyObject = {
@@ -62,6 +62,7 @@ export default class Parameters {
       case 'number':
         return Schema.number(property.schema);
     }
+    return Schema.number(property.schema);
   }
 
   getParameters() {

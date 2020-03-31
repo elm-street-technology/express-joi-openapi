@@ -4,4 +4,5 @@ module.exports = {
   testPathIgnorePatterns: ['src/spec.ts', 'dist/*'],
   collectCoverage: true,
   coverageReporters: ['html', 'text'],
+  rootDir: 'src',
 };

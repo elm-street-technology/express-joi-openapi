@@ -1,7 +1,8 @@
 import joi from '@hapi/joi';
 
-export function number(schema: joi.ObjectSchema) {
-  const jsonSchema = {
+export function number(schema: any) {
+  //: joi.ObjectSchema
+  const jsonSchema: any = {
     type: 'number',
   };
 
@@ -32,8 +33,8 @@ export function number(schema: joi.ObjectSchema) {
         break;
       case 'precision':
         let multipleOf;
-        if (test.arg > 1) {
-          multipleOf = JSON.parse('0.' + '0'.repeat(test.arg - 1) + '1');
+        if (rule.args > 1) {
+          multipleOf = JSON.parse('0.' + '0'.repeat(rule.args - 1) + '1');
         } else {
           multipleOf = 1;
         }

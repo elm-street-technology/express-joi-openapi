@@ -1,11 +1,12 @@
 import assert from 'assert';
 import Joi from '@hapi/joi';
 
-export let TYPES = {
-  alternatives: (schema: any, joi: Joi.ObjectSchema, transformer: Function) => {
-    var result = (schema.oneOf = []);
+export let TYPES: { [index: string]: any } = {
+  alternatives: (schema: any, joi: { _inner: { matches: any[] } }, transformer: Function) => {
+    //: Joi.ObjectSchema
+    var result: any[] = (schema.oneOf = []);
 
-    joi._inner.matches.forEach(function(match) {
+    joi._inner.matches.forEach(function (match) {
       if (match.schema) {
         return result.push(convert(match.schema, transformer));
       }
@@ -28,7 +29,7 @@ export let TYPES = {
     return schema;
   },
 
-  date: (schema, joi) => {
+  date: (schema: any, joi: any) => {
     if (joi._flags.timestamp) {
       schema.type = 'integer';
       return schema;
@@ -39,15 +40,15 @@ export let TYPES = {
     return schema;
   },
 
-  any: schema => {
+  any: (schema: any) => {
     schema.type = ['array', 'boolean', 'number', 'object', 'string', 'null'];
     return schema;
   },
 
-  array: (schema, joi, transformer) => {
+  array: (schema: any, joi: any, transformer: any) => {
     schema.type = 'array';
 
-    joi._tests.forEach(test => {
+    joi._tests.forEach((test: any) => {
       switch (test.name) {
         case 'unique':
           schema.uniqueItems = true;
@@ -66,7 +67,7 @@ export let TYPES = {
 
     if (joi._inner) {
       if (joi._inner.ordereds.length) {
-        schema.ordered = joi._inner.ordereds.map(item => convert(item, transformer));
+        schema.ordered = joi._inner.ordereds.map((item: any) => convert(item, transformer));
       }
 
       let list;
@@ -84,7 +85,7 @@ export let TYPES = {
     return schema;
   },
 
-  binary: (schema, joi) => {
+  binary: (schema: any, joi: any) => {
     schema.type = 'string';
     schema.contentMediaType =
       joi._meta.length > 0 && joi._meta[0].contentMediaType ? joi._meta[0].contentMediaType : 'text/plain';
@@ -92,14 +93,14 @@ export let TYPES = {
     return schema;
   },
 
-  boolean: schema => {
+  boolean: (schema: any) => {
     schema.type = 'boolean';
     return schema;
   },
 
-  number: (schema, joi) => {
+  number: (schema: any, joi: any) => {
     schema.type = 'number';
-    joi._tests.forEach(test => {
+    joi._tests.forEach((test: any) => {
       switch (test.name) {
         case 'integer':
           schema.type = 'integer';
@@ -132,10 +133,10 @@ export let TYPES = {
     return schema;
   },
 
-  string: (schema, joi) => {
+  string: (schema: any, joi: any) => {
     schema.type = 'string';
 
-    joi._tests.forEach(test => {
+    joi._tests.forEach((test: any) => {
       switch (test.name) {
         case 'email':
           schema.format = 'email';
@@ -175,11 +176,11 @@ export let TYPES = {
     return schema;
   },
 
-  object: (schema, joi, transformer) => {
+  object: (schema: any, joi: any, transformer: any) => {
     schema.type = 'object';
     schema.properties = {};
     schema.additionalProperties = Boolean(joi._flags.allowUnknown || !joi._inner.children);
-    schema.patterns = joi._inner.patterns.map(pattern => {
+    schema.patterns = joi._inner.patterns.map((pattern: any) => {
       return { regex: pattern.regex, rule: convert(pattern.rule, transformer) };
     });
 
@@ -187,7 +188,7 @@ export let TYPES = {
       return schema;
     }
 
-    joi._inner.children.forEach(property => {
+    joi._inner.children.forEach((property: any) => {
       if (property.schema._flags.presence !== 'forbidden') {
         schema.properties[property.key] = convert(property.schema, transformer);
         if (
@@ -214,7 +215,8 @@ export let TYPES = {
  * @param {TransformFunction} [transformer=null]
  * @returns {JSONSchema}
  */
-export default function convert(joi: Joi.ObjectSchema, transformer = null) {
+export default function convert(joi: any, transformer: Function | null = null) {
+  //Joi.ObjectSchema
   if (!TYPES[joi.type]) {
     throw new Error(`sorry, do not know how to convert unknown joi type: "${joi.type}"`);
   }
@@ -231,7 +233,7 @@ export default function convert(joi: Joi.ObjectSchema, transformer = null) {
   }
 
   if (joi._examples && joi._examples.length > 0) {
-    schema.examples = joi._examples.map(e => e.value);
+    schema.examples = joi._examples.map((e: any) => e.value);
   }
 
   if (joi._examples && joi._examples.length === 1) {
