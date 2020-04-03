@@ -3,7 +3,7 @@ import _ from 'lodash';
 import * as Schema from './schema';
 // import convert from 'joi-to-json-schema';
 
-interface ISchemaObject { }
+interface ISchemaObject {}
 
 export interface IPropertyObject {
   name: string;

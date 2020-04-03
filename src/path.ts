@@ -1,3 +1,4 @@
+import * as openapi from './types/openapi';
 import * as express from 'express';
 import * as joi from '@hapi/joi';
 import * as pathToRegexp from 'path-to-regexp';
@@ -9,8 +10,7 @@ export interface IPathConfig {
   path: string;
   description: string;
   handler: Array<express.RequestHandler> | express.RequestHandler;
-  responses: {};
-  // responses: {| [statusCode: string | "default"]: $OpenapiResponseObject |},
+  responses: { [statusCode: string]: openapi.IResponseObject };
   validate?: {
     query?: joi.ObjectSchema;
     params?: joi.ObjectSchema;
@@ -56,6 +56,7 @@ export default class Path {
       {
         description: this.config.description,
         parameters,
+        responses: this.config.responses,
       },
       _.isNil,
     );
