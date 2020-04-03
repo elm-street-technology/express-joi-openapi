@@ -58,3 +58,54 @@ export interface IOpenapiObject {
   components?: IComponentsObject;
   security?: Array<ISecurityRequirementObject>;
 }
+
+type Type = 'string' | 'integer' | 'number' | 'boolean' | 'array' | 'object';
+
+interface ISchemaObject {
+  type: Type;
+}
+
+interface IExampleObject {
+  summary?: string;
+  description?: string;
+  value?: Type;
+  externalValue?: string;
+}
+
+interface IHeaderObject {
+  description: string;
+  schema?: ISchemaObject;
+}
+
+type Headers = { [name: string]: IHeaderObject };
+
+interface IEncodingObject {
+  contentType: string;
+  headers?: Headers;
+  style?: string;
+  explode?: boolean;
+  allowReserved?: boolean;
+}
+
+interface IMediaTypeObject {
+  schema?: ISchemaObject;
+  example?: Type;
+  examples?: { [name: string]: IExampleObject };
+  encoding?: { [type: string]: IEncodingObject };
+}
+
+interface ILinkObject {
+  operationRef?: string;
+  operationId?: string;
+  parameters?: { [name: string]: Type };
+  requestBody?: Type;
+  description?: string;
+  server?: IServerObject;
+}
+
+export interface IResponseObject {
+  description: string;
+  headers?: Headers;
+  content?: { [type: string]: IMediaTypeObject };
+  links?: { [name: string]: ILinkObject };
+}

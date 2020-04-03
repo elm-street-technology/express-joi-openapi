@@ -6,7 +6,7 @@ export let TYPES: { [index: string]: any } = {
     //: Joi.ObjectSchema
     var result: any[] = (schema.oneOf = []);
 
-    joi._inner.matches.forEach(function (match) {
+    joi._inner.matches.forEach(function(match) {
       if (match.schema) {
         return result.push(convert(match.schema, transformer));
       }
