@@ -17,7 +17,7 @@ export default function expressJoiMiddleware(schema: { query?: Object; params?: 
       next();
     } catch (error) {
       res.status(400);
-      res.send({
+      res.json({
         error: 'ValidationError',
         messages: _.map(error.details, errMessage => ({
           message: errMessage.message,
