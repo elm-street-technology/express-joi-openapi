@@ -1,0 +1,33 @@
+{
+  "name": "example",
+  "version": "0.0.0",
+  "description": "Example of the API",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "web": "babel-watch -w src -L src/index.js",
+    "build": "rm -rf dist && webpack --mode development --config webpack.server.config.js && yarn start",
+    "start": "node ./dist/server.js"
+  },
+  "dependencies": {
+    "@elm-street-technology/express-joi-openapi": "link:..",
+    "express": "^4.17.1",
+    "faker": "^4.1.0",
+    "glob": "^7.1.6",
+    "lodash": "^4.17.15",
+    "swagger-ui-express": "^4.1.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "babel-loader": "^8.1.0",
+    "babel-watch": "^7.0.0",
+    "foreman": "^3.0.1",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-middleware": "^3.7.2",
+    "webpack-hot-middleware": "^2.25.0",
+    "webpack-node-externals": "^1.7.2"
+  }
+}

@@ -54,7 +54,7 @@ export default class Parameters {
       },
       [],
     );
-    console.log(JSON.stringify(this.parameters, null, 2));
+    //console.log(JSON.stringify(this.parameters, null, 2));
   }
 
   generateSchema(property: JoiKeysObject): ISchemaObject {

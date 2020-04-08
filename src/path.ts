@@ -8,7 +8,11 @@ import ParameterParser, { IPropertyObject } from './utils/parse-parameters';
 export interface IPathConfig {
   method: 'get' | 'post' | 'put' | 'delete';
   path: string;
+  summary: string;
   description: string;
+  operationId: string;
+  deprecated: boolean;
+  tags?: Array<openapi.ITagObject>;
   handler: Array<express.RequestHandler> | express.RequestHandler;
   responses: { [statusCode: string]: openapi.IResponseObject };
   validate?: {
@@ -29,7 +33,9 @@ export default class Path {
   private pathParams: ParameterParser | null = null;
 
   getOpenapiPath() {
+    console.log('this.config ==>', this.config);
     const parsedPath = pathToRegexp.parse(this.config.path);
+    console.log('parsedPath ==>', parsedPath);
     return _.reduce(
       parsedPath,
       (out, item) => {
@@ -54,7 +60,11 @@ export default class Path {
     const parameters = _.compact(_.concat([], pathParams, queryParams));
     return _.omitBy(
       {
+        summary: this.config.summary,
+        operationId: this.config.operationId,
         description: this.config.description,
+        tags: this.config.tags,
+        deprecated: !!this.config.deprecated,
         parameters,
         responses: this.config.responses,
       },
