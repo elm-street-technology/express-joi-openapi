@@ -1,3 +1,4 @@
+import joi from "@hapi/joi";
 import ExpressJoiOpenapi from "@elm-street-technology/express-joi-openapi";
 
 let instances = {};
@@ -29,15 +30,32 @@ export function setup(server) {
       },
       servers: [
         {
-          url: "https://localhost:8005/v1",
+          url: "http://localhost:3000",
           description: "Development server",
         },
         {
-          url: "https://localhost:8006/v1",
+          url: "http://localhost:8006",
           description: "Production server",
         },
       ],
+      defaultErrorResponse: {
+        description: "Error",
+        content: {
+          "application/json": {
+            schema: joi.object({
+              error: joi.string(),
+              messages: joi.array().items(
+                joi.object({
+                  message: joi.string(),
+                  path: joi.array().items(joi.string()),
+                })
+              ),
+            }),
+          },
+        },
+      },
     },
+
     server.app
   );
 

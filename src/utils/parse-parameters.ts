@@ -61,6 +61,12 @@ export default class Parameters {
     switch (property.schema.type) {
       case 'number':
         return Schema.number(property.schema);
+      case 'boolean':
+        return Schema.boolean(property.schema);
+      case 'date':
+        return Schema.date(property.schema);
+      case 'string':
+        return Schema.string(property.schema);
     }
     return Schema.number(property.schema);
   }
