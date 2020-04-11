@@ -44,8 +44,14 @@ export default class Server {
   }
 
   route(config: IPathConfig) {
-    const path = new Path(config);
+    const path = new Path(config, this.spec.baseSpec);
     this.spec.addPath(path);
     this.attachToServer(config);
+  }
+
+  routes(configs: Array<IPathConfig>) {
+    configs.forEach((config: IPathConfig) => {
+      this.route(config);
+    });
   }
 }

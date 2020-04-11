@@ -54,13 +54,19 @@ export default class Parameters {
       },
       [],
     );
-    console.log(JSON.stringify(this.parameters, null, 2));
+    //console.log(JSON.stringify(this.parameters, null, 2));
   }
 
   generateSchema(property: JoiKeysObject): ISchemaObject {
     switch (property.schema.type) {
       case 'number':
         return Schema.number(property.schema);
+      case 'boolean':
+        return Schema.boolean(property.schema);
+      case 'date':
+        return Schema.date(property.schema);
+      case 'string':
+        return Schema.string(property.schema);
     }
     return Schema.number(property.schema);
   }

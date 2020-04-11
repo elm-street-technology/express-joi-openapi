@@ -4,11 +4,16 @@ import * as joi from '@hapi/joi';
 import * as pathToRegexp from 'path-to-regexp';
 import _ from 'lodash';
 import ParameterParser, { IPropertyObject } from './utils/parse-parameters';
+import { IOpenapiBase } from './spec';
 
 export interface IPathConfig {
   method: 'get' | 'post' | 'put' | 'delete';
   path: string;
+  summary: string;
   description: string;
+  operationId: string;
+  deprecated: boolean;
+  tags?: Array<openapi.ITagObject>;
   handler: Array<express.RequestHandler> | express.RequestHandler;
   responses: { [statusCode: string]: openapi.IResponseObject };
   validate?: {
@@ -24,12 +29,15 @@ export interface IPathObject {
 }
 
 export default class Path {
+  private parentConfig: IOpenapiBase;
   private config: IPathConfig;
   private queryParams: ParameterParser | null = null;
   private pathParams: ParameterParser | null = null;
 
   getOpenapiPath() {
+    //console.log('this.config ==>', this.config);
     const parsedPath = pathToRegexp.parse(this.config.path);
+    //console.log('parsedPath ==>', parsedPath);
     return _.reduce(
       parsedPath,
       (out, item) => {
@@ -52,17 +60,24 @@ export default class Path {
     const pathParams = this.pathParams ? this.pathParams.getParameters() : null;
     const queryParams = this.queryParams ? this.queryParams.getParameters() : null;
     const parameters = _.compact(_.concat([], pathParams, queryParams));
+    const response500 = !_.has(this.config.responses, '500') ? { '500': this.parentConfig.defaultErrorResponse } : {};
+
     return _.omitBy(
       {
+        summary: this.config.summary,
+        operationId: this.config.operationId,
         description: this.config.description,
+        tags: this.config.tags,
+        deprecated: !!this.config.deprecated,
         parameters,
-        responses: this.config.responses,
+        responses: _.assign({}, this.config.responses, response500),
       },
       _.isNil,
     );
   }
 
-  constructor(config: IPathConfig) {
+  constructor(config: IPathConfig, parentConfig: IOpenapiBase) {
+    this.parentConfig = parentConfig;
     this.config = config;
     if (this.config.validate && this.config.validate.query) {
       this.queryParams = new ParameterParser(this.config.validate.query, 'query');

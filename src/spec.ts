@@ -10,6 +10,7 @@ export interface IOpenapiBase {
   tags?: Array<openapi.ITagObject>;
   externalDocs?: openapi.IExternalDocs;
   security?: Array<openapi.ISecurityRequirementObject>;
+  defaultErrorResponse?: openapi.IResponseObject;
 }
 
 export default class Spec {
@@ -42,6 +43,7 @@ export default class Spec {
   }
 
   getDefinition() {
-    return { ...this.baseSpec, paths: this.generatePaths() };
+    const spec: openapi.IOpenapiObject = _.omit(this.baseSpec, ['defaultErrorResponse']);
+    return { ...spec, paths: this.generatePaths() };
   }
 }
