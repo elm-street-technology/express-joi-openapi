@@ -15,6 +15,7 @@ export interface IOpenapiBase {
 export default class Spec {
   public paths: Array<Path> = [];
   public baseSpec: IOpenapiBase;
+  private components: openapi.IComponentsObject = {};
 
   constructor(baseSpec: IOpenapiBase) {
     this.baseSpec = baseSpec;
@@ -22,6 +23,15 @@ export default class Spec {
 
   addPath(path: Path) {
     this.paths.push(path);
+  }
+
+  addComponent(component: openapi.IComponentsObject) {
+    Object.keys(component).forEach((key: keyof openapi.IComponentsObject) => {
+      if (!this.components[key]) {
+        this.components[key] = {};
+      }
+      this.components[key] = Object.assign({}, this.components[key], component[key]);
+    });
   }
 
   generatePaths() {
@@ -42,6 +52,6 @@ export default class Spec {
   }
 
   getDefinition() {
-    return { ...this.baseSpec, paths: this.generatePaths() };
+    return { ...this.baseSpec, paths: this.generatePaths(), components: this.components };
   }
 }

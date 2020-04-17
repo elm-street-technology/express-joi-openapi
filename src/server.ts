@@ -48,4 +48,8 @@ export default class Server {
     this.spec.addPath(path);
     this.attachToServer(config);
   }
+
+  component(component: openapi.IComponentsObject) {
+    this.spec.addComponent(component);
+  }
 }
