@@ -10,6 +10,7 @@ export interface IPathConfig {
   path: string;
   description: string;
   handler: Array<express.RequestHandler> | express.RequestHandler;
+  tags?: Array<openapi.ITagObject>;
   responses: { [statusCode: string]: openapi.IResponseObject };
   validate?: {
     query?: joi.ObjectSchema;
@@ -57,6 +58,7 @@ export default class Path {
         description: this.config.description,
         parameters,
         responses: this.config.responses,
+        tags: this.config.tags,
       },
       _.isNil,
     );

@@ -4,6 +4,18 @@ interface IContactObject {
   email?: string;
 }
 
+export interface IComponentsObject {
+  schemas?: { [name: string]: ISchemaObject };
+  securitySchemas?: { [name: string]: ISchemaObject };
+  // TODO responses
+  // TODO parameters
+  // TODO examples
+  // TODO requestBodies
+  // TODO headers
+  // TODO links
+  // TODO callbacks
+}
+
 interface ILicenseObject {
   name: string;
   url?: string;
@@ -43,8 +55,6 @@ export interface IServerObject {
   variables?: IServerVariableObject;
 }
 
-export interface IComponentsObject {}
-
 export interface ISecurityRequirementObject {
   [name: string]: Array<string>;
 }
@@ -61,8 +71,27 @@ export interface IOpenapiObject {
 
 type Type = 'string' | 'integer' | 'number' | 'boolean' | 'array' | 'object';
 
+interface IPropertyObject {
+  type: Type;
+  // TODO allOf
+  // TODO oneOf
+  // TODO anyOf
+  // TODO not
+  // TODO items
+  // TODO properties
+  // TODO additionalProperties
+  description?: string;
+  format?: string;
+  default?: Type;
+}
+
+interface IReferenceObject {
+  "$ref": string;
+}
+
 interface ISchemaObject {
   type: Type;
+  properties: { [name: string]: IPropertyObject | IReferenceObject };
 }
 
 interface IExampleObject {

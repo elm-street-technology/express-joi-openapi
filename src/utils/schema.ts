@@ -9,7 +9,6 @@ export function number(schema: any) {
   let rules = ['integer', 'less', 'greater', 'min', 'max', 'precision'];
   rules.forEach(value => {
     const rule = schema.$_getRule(value);
-    console.dir(rule);
     if (!rule) {
       return;
     }
