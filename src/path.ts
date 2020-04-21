@@ -8,10 +8,16 @@ import ParameterParser, { IPropertyObject } from './utils/parse-parameters';
 export interface IPathConfig {
   method: 'get' | 'post' | 'put' | 'delete';
   path: string;
-  description: string;
+  description?: string;
+  summary?: string;
+  operationId?: string;
+  // TODO externalDocs
+  // TODO callbacks
+  // TODO requestBody
+  deprecated?: boolean;
   handler: Array<express.RequestHandler> | express.RequestHandler;
   tags?: Array<openapi.ITagObject>;
-  responses: { [statusCode: string]: openapi.IResponseObject };
+  responses?: { [statusCode: string]: openapi.IResponseObject };
   validate?: {
     query?: joi.ObjectSchema;
     params?: joi.ObjectSchema;
@@ -55,6 +61,9 @@ export default class Path {
     const parameters = _.compact(_.concat([], pathParams, queryParams));
     return _.omitBy(
       {
+        summary: this.config.summary,
+        operationId: this.config.operationId,
+        deprecated: this.config.deprecated,
         description: this.config.description,
         parameters,
         responses: this.config.responses,
@@ -73,9 +82,7 @@ export default class Path {
       this.pathParams = new ParameterParser(this.config.validate.params, 'path');
     }
     // TODO body
-
     // TODO header
-
     // TODO cookies
   }
 }
