@@ -3,7 +3,6 @@ import Path, { IPathConfig } from './path';
 import joiValidatorMiddleware from './middleware/express-joi-validator';
 import _ from 'lodash';
 import * as openapi from './types/openapi';
-
 import * as express from 'express';
 
 export default class Server {

@@ -34,24 +34,7 @@ export default class Spec {
     });
   }
 
-  generatePaths() {
-    const pathGroups: { [name: string]: Array<Path> } = _.groupBy(this.paths, p => p.getOpenapiPath());
-    return _.transform(
-      pathGroups,
-      (pathsObjects: { [path: string]: any }, group: Array<Path>, key: string) => {
-        pathsObjects[key] = _.transform(
-          group,
-          (pathObject: { [method: string]: any }, path) => {
-            pathObject[path.getMethod()] = path.getPathObject();
-          },
-          {},
-        );
-      },
-      {},
-    );
-  }
-
   getDefinition() {
-    return { ...this.baseSpec, paths: this.generatePaths(), components: this.components };
+    return { ...this.baseSpec, paths: Path.generatePaths(this.paths), components: this.components };
   }
 }

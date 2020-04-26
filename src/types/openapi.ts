@@ -4,6 +4,37 @@ interface IContactObject {
   email?: string;
 }
 
+export interface IPathItemObject {
+  summary?: string;
+  description?: string;
+  get?: IOperationObject;
+  put?: IOperationObject;
+  post?: IOperationObject;
+  delete?: IOperationObject;
+  options?: IOperationObject;
+  head?: IOperationObject;
+  patch?: IOperationObject;
+  trace?: IOperationObject;
+  servers?: Array<IServerObject>;
+  parameters?: Array<IParameterObject>;
+}
+
+export interface IParameterObject {
+  name: string;
+  in: string;
+  description?: string;
+  required?: boolean;
+  deprecated?: boolean;
+  allowEmptyValue?: boolean;
+  // TODO style
+  // TODO explode
+  // TODO allowReserved
+  schema?: ISchemaObject | IReferenceObject;
+  // TODO example
+  // TODO examples
+  // TODO content
+}
+
 export interface IComponentsObject {
   schemas?: { [name: string]: ISchemaObject };
   securitySchemas?: { [name: string]: ISchemaObject };
@@ -59,6 +90,12 @@ export interface ISecurityRequirementObject {
   [name: string]: Array<string>;
 }
 
+export interface IRequestBodyObject {
+  description?: string;
+  content: { [name: string]: IMediaTypeObject };
+  required?: boolean;
+}
+
 export interface IOpenapiObject {
   openapi: string;
   info: IInfoObject;
@@ -69,9 +106,14 @@ export interface IOpenapiObject {
   security?: Array<ISecurityRequirementObject>;
 }
 
-type Type = 'string' | 'integer' | 'number' | 'boolean' | 'array' | 'object';
+export type Type = 'string' | 'integer' | 'number' | 'boolean' | 'array' | 'object';
 
-interface IPropertyObject {
+interface IReferenceObject {
+  $ref: string;
+}
+
+// TODO divide into different types with unions
+export interface ISchemaObject {
   type: Type;
   // TODO allOf
   // TODO oneOf
@@ -83,15 +125,14 @@ interface IPropertyObject {
   description?: string;
   format?: string;
   default?: Type;
-}
-
-interface IReferenceObject {
-  "$ref": string;
-}
-
-interface ISchemaObject {
-  type: Type;
-  properties: { [name: string]: IPropertyObject | IReferenceObject };
+  properties?: { [name: string]: ISchemaObject | IReferenceObject };
+  maxLength?: number;
+  minLength?: number;
+  exclusiveMinimum?: boolean;
+  exclusiveMaximum?: boolean;
+  minimum?: number;
+  maximum?: number;
+  items?: ISchemaObject;
 }
 
 interface IExampleObject {
@@ -99,6 +140,21 @@ interface IExampleObject {
   description?: string;
   value?: Type;
   externalValue?: string;
+}
+
+export interface IOperationObject {
+  tags?: Array<ITagObject>;
+  summary?: string;
+  description?: string;
+  // TODO externalDocs
+  operationId?: string;
+  // TODO parameters
+  // TODO request body (defaults)
+  responses?: { [statusCode: string]: IResponseObject };
+  // TODO callbacks
+  deprecated?: boolean;
+  // TODO security
+  // TODO servers
 }
 
 interface IHeaderObject {
@@ -116,7 +172,7 @@ interface IEncodingObject {
   allowReserved?: boolean;
 }
 
-interface IMediaTypeObject {
+export interface IMediaTypeObject {
   schema?: ISchemaObject;
   example?: Type;
   examples?: { [name: string]: IExampleObject };
