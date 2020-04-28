@@ -173,7 +173,7 @@ interface IEncodingObject {
 }
 
 export interface IMediaTypeObject {
-  schema?: ISchemaObject;
+  schema?: ISchemaObject | IReferenceObject;
   example?: Type;
   examples?: { [name: string]: IExampleObject };
   encoding?: { [type: string]: IEncodingObject };

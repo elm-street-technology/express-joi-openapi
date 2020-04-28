@@ -35,6 +35,13 @@ export default class Spec {
   }
 
   getDefinition() {
+    // Dynamically add any components defined implicitly in the path config.
+    _.each(this.paths, path => {
+      const component = path.generateComponent();
+      if (component) {
+        this.addComponent(component);
+      }
+    });
     return { ...this.baseSpec, paths: Path.generatePaths(this.paths), components: this.components };
   }
 }

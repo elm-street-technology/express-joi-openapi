@@ -9,7 +9,7 @@ const openapiServer = new expressJoiOpenapi.server(
     {
       openapi: "3.0.3",
       info: {
-        title: "CRM API v2",
+        title: "API v2",
         version: "0.0.1",
         termsOfService: "http://example.com/terms/",
         contact: {
@@ -24,7 +24,7 @@ const openapiServer = new expressJoiOpenapi.server(
       },
       servers: [
         {
-          url: "/v2",
+          url: "/v1",
         },
       ],
     },
@@ -34,12 +34,17 @@ const openapiServer = new expressJoiOpenapi.server(
 
 
 openapiServer.route({
-    description: "Returns all Leads",
+    description: "List categories",
     method: "get",
-    path: "/v2/names",
-    handler: Distraught.jw(leadsHandler),
-    validate: {
-      query: joi.object().keys({
+    path: "/v1/categories",
+    handler: async (req, res) => {
+      res.json(await Category.all({
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    },
+    validateQuery: {
+      schema: joi.object().keys({
         limit: joi
           .number()
           .integer()
