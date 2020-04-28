@@ -121,7 +121,7 @@ function toSchemaArray(schema: joi.ObjectSchema): openapi.ISchemaObject {
         if (schema.$_terms.items.length === 1) {
           openApiSchema.items = openApiSchemaObject(schema.$_terms.items[0]);
         } else {
-          throw new Error("Array items anyOf, oneOf, allOf not implemented.");
+          throw new Error('Array items anyOf, oneOf, allOf not implemented.');
         }
       }
     }

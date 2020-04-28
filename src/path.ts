@@ -19,10 +19,17 @@ export interface IPathConfig {
   handler: Array<express.RequestHandler> | express.RequestHandler;
   tags?: Array<openapi.ITagObject>;
   responses?: { [statusCode: string]: openapi.IResponseObject };
-  validate?: {
-    query?: joi.ObjectSchema;
-    params?: joi.ObjectSchema;
-    body?: joi.ObjectSchema;
+  validateQuery?: {
+    componentName?: string;
+    schema: joi.ObjectSchema;
+  };
+  validateParams?: {
+    componentName?: string;
+    schema: joi.ObjectSchema;
+  };
+  validateBody?: {
+    componentName?: string;
+    schema: joi.ObjectSchema;
   };
 }
 
@@ -74,10 +81,21 @@ export default class Path {
     return this.config.method;
   }
 
+  generateComponent(): openapi.IComponentsObject | null {
+    if (this.config.validateBody && this.config.validateBody.componentName) {
+      const schemas: { [name: string]: openapi.ISchemaObject } = {};
+      const name = this.config.validateBody.componentName;
+      schemas[name] = JoiSchema.openApiSchemaObject(this.config.validateBody.schema);
+      return { schemas };
+    } else {
+      return null;
+    }
+  }
+
   getOperationObject(): openapi.IOperationObject {
-    if (!this.pathParams && this.config.validate && this.config.validate.params) {
+    if (!this.pathParams && this.config.validateParams) {
       this.pathParams = _.transform(
-        JoiSchema.keys(this.config.validate.params),
+        JoiSchema.keys(this.config.validateParams.schema),
         (acc, key) => {
           acc.push({
             name: JoiKey.name(key),
@@ -88,9 +106,9 @@ export default class Path {
         [],
       );
     }
-    if (!this.queryParams && this.config.validate && this.config.validate.query) {
+    if (!this.queryParams && this.config.validateQuery) {
       this.queryParams = _.transform(
-        JoiSchema.keys(this.config.validate.query),
+        JoiSchema.keys(this.config.validateQuery.schema),
         (acc, key) => {
           acc.push({
             name: JoiKey.name(key),
@@ -101,12 +119,22 @@ export default class Path {
         [],
       );
     }
-    if (!this.requestBody && this.config.validate && this.config.validate.body) {
+    if (!this.requestBody && this.config.validateBody) {
+      let schemaObject;
+      const componentName = this.config.validateBody.componentName;
+      if (componentName) {
+        // This schema has been added to the spec as a named
+        // component.
+        schemaObject = { $ref: `#/components/schemas/${componentName}` };
+      } else {
+        // This is an inline schema
+        schemaObject = JoiSchema.openApiSchemaObject(this.config.validateBody.schema);
+      }
       this.requestBody = _.assign({}, this.config.requestBody || {}, {
         content: {
           // TODO multi request content type support
           '*/*': {
-            schema: JoiSchema.openApiSchemaObject(this.config.validate.body),
+            schema: schemaObject,
           },
         },
       });
