@@ -16,14 +16,17 @@ export default function expressJoiMiddleware(schema: { query?: Object; params?: 
       }
       next();
     } catch (error) {
-      res.status(400);
-      res.json({
-        error: 'ValidationError',
-        messages: _.map(error.details, errMessage => ({
-          message: errMessage.message,
-          path: errMessage.path,
-        })),
-      });
+      if (error.isJoi) {
+        res.status(400).json({
+          error: 'ValidationError',
+          messages: _.map(error.details, errMessage => ({
+            message: errMessage.message,
+            path: errMessage.path,
+          })),
+        });
+      } else {
+        next(error);
+      }
     }
   };
 }

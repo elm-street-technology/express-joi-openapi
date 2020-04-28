@@ -20,9 +20,9 @@ export default class Server {
 
   private generateValidator(route: IPathConfig): express.Handler | null {
     const config = {
-      params: route.validateParams,
-      query: route.validateQuery,
-      body: route.validateBody,
+      params: route.validateParams && route.validateParams.schema,
+      query: route.validateQuery && route.validateQuery.schema,
+      body: route.validateBody && route.validateBody.schema,
     };
     if (!_.isEmpty(_.compact(_.values(config)))) {
       return joiValidatorMiddleware(config);
