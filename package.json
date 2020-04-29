@@ -12,10 +12,10 @@
     "build": "npx tsc",
     "start": "npm run build -- -w",
     "format": "prettier --write \"src/**/*.ts\"",
+    "check": "npm run lint && np run format-check",
     "format-check": "prettier -l 'src/**/*.ts'",
     "lint": "npx tslint -p tsconfig.json",
-    "postversion": "git push --follow-tags",
-    "test": "jest"
+    "postversion": "git push --follow-tags"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.149",
