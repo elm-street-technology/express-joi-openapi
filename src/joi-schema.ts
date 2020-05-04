@@ -24,6 +24,8 @@ function openApiSchemaObject(schema: joi.ObjectSchema): openapi.ISchemaObject {
       return toSchemaObject(schema);
     case 'array':
       return toSchemaArray(schema);
+    case 'boolean':
+      return toSchemaBoolean(schema);
   }
 }
 
