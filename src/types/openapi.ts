@@ -120,7 +120,6 @@ export interface ISchemaObject {
   // TODO anyOf
   // TODO not
   // TODO items
-  // TODO properties
   // TODO additionalProperties
   description?: string;
   format?: string;
@@ -133,6 +132,7 @@ export interface ISchemaObject {
   minimum?: number;
   maximum?: number;
   items?: ISchemaObject;
+  required?: string[];
 }
 
 interface IExampleObject {
