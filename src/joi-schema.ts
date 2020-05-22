@@ -95,16 +95,27 @@ function toSchemaBoolean(schema: joi.ObjectSchema): openapi.ISchemaObject {
 
 // Transform a Joi schema to a object type OpenAPI V3 Schema Object
 function toSchemaObject(schema: joi.ObjectSchema): openapi.ISchemaObject {
-  return {
+  let openApiSchema: openapi.ISchemaObject = {
     type: <openapi.Type>'object',
-    properties: _.transform(
-      keys(schema),
-      (acc: { [name: string]: openapi.ISchemaObject }, key: IJoiKey) => {
-        acc[JoiKey.name(key)] = openApiSchemaObject(JoiKey.schema(key));
-      },
-      {},
-    ),
   };
+  const required = _.transform(keys(schema), (acc: string[], key: IJoiKey) => {
+    const schema = JoiKey.schema(key);
+    if (hasFlag(schema, 'presence', 'required')) {
+      acc.push(JoiKey.name(key));
+    }
+    return acc;
+  });
+  if (required.length > 0) {
+    openApiSchema.required = required;
+  }
+  openApiSchema.properties = _.transform(
+    keys(schema),
+    (acc: { [name: string]: openapi.ISchemaObject }, key: IJoiKey) => {
+      acc[JoiKey.name(key)] = openApiSchemaObject(JoiKey.schema(key));
+    },
+    {},
+  );
+  return openApiSchema;
 }
 
 // Transform a Joi schema to a array type OpenAPI V3 Schema Object
@@ -129,4 +140,8 @@ function toSchemaArray(schema: joi.ObjectSchema): openapi.ISchemaObject {
     }
   });
   return openApiSchema;
+}
+
+function hasFlag(schema: joi.ObjectSchema, flag: string, value: string): boolean {
+  return schema._flags[flag] === value;
 }
