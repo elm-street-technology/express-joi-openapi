@@ -133,6 +133,7 @@ export interface ISchemaObject {
   maximum?: number;
   items?: ISchemaObject;
   required?: string[];
+  enum?: string[];
 }
 
 interface IExampleObject {

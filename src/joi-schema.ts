@@ -69,6 +69,11 @@ function toSchemaString(schema: joi.ObjectSchema): openapi.ISchemaObject {
     type: <openapi.Type>'string',
   };
   let rules = ['min', 'max'];
+  const description = schema.describe();
+  const valids = getValids(description);
+  if (valids.length > 0) {
+    openApiSchema.enum = valids;
+  }
   rules.forEach(value => {
     const rule = schema.$_getRule(value);
     if (!rule) {
@@ -100,7 +105,8 @@ function toSchemaObject(schema: joi.ObjectSchema): openapi.ISchemaObject {
   };
   const required = _.transform(keys(schema), (acc: string[], key: IJoiKey) => {
     const schema = JoiKey.schema(key);
-    if (hasFlag(schema, 'presence', 'required')) {
+    const description = schema.describe();
+    if (hasFlag(description, 'presence', 'required')) {
       acc.push(JoiKey.name(key));
     }
     return acc;
@@ -142,6 +148,11 @@ function toSchemaArray(schema: joi.ObjectSchema): openapi.ISchemaObject {
   return openApiSchema;
 }
 
-function hasFlag(schema: joi.ObjectSchema, flag: string, value: string): boolean {
-  return schema._flags[flag] === value;
+function hasFlag(description: joi.Description, flag: string, value: string): boolean {
+  const result = _.get(description.flags, flag);
+  return result && result === 'required';
+}
+
+function getValids(description: joi.Description): string[] {
+  return description.allow ? description.allow : [];
 }
