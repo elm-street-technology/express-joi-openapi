@@ -99,6 +99,7 @@ export default class Path {
         (acc, key) => {
           acc.push({
             name: JoiKey.name(key),
+            required: true,
             in: 'path',
             schema: JoiSchema.openApiSchemaObject(JoiKey.schema(key)),
           });
