@@ -70,9 +70,13 @@ function toSchemaString(schema: joi.ObjectSchema): openapi.ISchemaObject {
   };
   let rules = ['min', 'max'];
   const description = schema.describe();
-  const valids = getValids(description);
+  let valids = getValids(description);
+  if (_.includes(valids, null)) {
+    openApiSchema.nullable = true;
+  }
+  const emptyValues = _.remove(valids, valid => _.includes([null, ''], valid));
   if (valids.length > 0) {
-    openApiSchema.enum = valids;
+    openApiSchema.enum = [...(_.includes(emptyValues, '') ? [''] : []), ...valids];
   }
   rules.forEach(value => {
     const rule = schema.$_getRule(value);

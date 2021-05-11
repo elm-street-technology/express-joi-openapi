@@ -134,6 +134,7 @@ export interface ISchemaObject {
   items?: ISchemaObject;
   required?: string[];
   enum?: string[];
+  nullable?: boolean;
 }
 
 interface IExampleObject {

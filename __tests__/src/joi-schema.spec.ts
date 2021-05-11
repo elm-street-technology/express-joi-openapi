@@ -37,4 +37,31 @@ describe("string schema", () => {
       },
     });
   });
+
+  test("generates nullable with any string instead of enum for joi allow", () => {
+    const actual = JoiSchema.openApiSchemaObject(Joi.object({a: Joi.string().allow("", null)}));
+    expect(actual).toEqual({
+      type: "object",
+      properties: {
+        a: {
+          type: "string",
+          nullable: true,
+        },
+      },
+    });
+  });
+
+  test("generates nullable with enum for joi allow", () => {
+    const actual = JoiSchema.openApiSchemaObject(Joi.object({a: Joi.string().allow("", null, "x", "y", "z")}));
+    expect(actual).toEqual({
+      type: "object",
+      properties: {
+        a: {
+          type: "string",
+          enum: ["", "x", "y", "z"],
+          nullable: true,
+        },
+      },
+    });
+  });
 });
